@@ -1,5 +1,5 @@
 // Configuración de la API
-const API_KEY = '38e27fa351f04d88b7d6baffd16f3e2d'; // API Key de prueba
+const API_KEY = 'eabfa271a09a4b2b813322f3f2921175'; // API Key de prueba
 const API_BASE_URL = 'https://newsapi.org/v2';
 
 // Estado de la aplicación
