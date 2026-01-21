@@ -1,6 +1,6 @@
 // Configuración de la API
-const API_KEY = 'eabfa271a09a4b2b813322f3f2921175'; // API Key de prueba
-const API_BASE_URL = 'https://newsapi.org/v2';
+const API_KEY = '0635d0df2e862bb56ac1729e7d0b583b'; // API Key de GNews
+const API_BASE_URL = 'https://gnews.io/api/v4';
 
 // Estado de la aplicación
 const state = {
@@ -82,11 +82,11 @@ async function loadNews(category) {
     showLoading();
     
     try {
-        const url = `${API_BASE_URL}/top-headlines?country=us&category=${category}&pageSize=12&apiKey=${API_KEY}`;
+        const url = `${API_BASE_URL}/top-headlines?category=${category}&lang=es&max=12&apikey=${API_KEY}`;
         const response = await fetch(url);
         const data = await response.json();
         
-        if (data.status === 'ok' && data.articles) {
+        if (data.articles && data.articles.length > 0) {
             state.currentNews = data.articles;
             displayNews(data.articles);
         } else {
@@ -103,11 +103,11 @@ async function searchNews(query) {
     showLoading();
     
     try {
-        const url = `${API_BASE_URL}/everything?q=${encodeURIComponent(query)}&pageSize=12&language=en&apiKey=${API_KEY}`;
+        const url = `${API_BASE_URL}/search?q=${encodeURIComponent(query)}&lang=es&max=12&apikey=${API_KEY}`;
         const response = await fetch(url);
         const data = await response.json();
         
-        if (data.status === 'ok' && data.articles) {
+        if (data.articles && data.articles.length > 0) {
             state.currentNews = data.articles;
             displayNews(data.articles);
         } else {
@@ -145,7 +145,7 @@ function displayNews(articles) {
 // Crear tarjeta de noticia
 function createNewsCard(article) {
     const isFavorite = state.favorites.some(fav => fav.url === article.url);
-    const imageUrl = article.urlToImage || 'https://via.placeholder.com/400x200?text=Sin+Imagen';
+    const imageUrl = article.image || 'https://via.placeholder.com/400x200?text=Sin+Imagen';
     const title = article.title || 'Sin título';
     const description = article.description || 'Sin descripción disponible';
     const source = article.source?.name || 'Fuente desconocida';
