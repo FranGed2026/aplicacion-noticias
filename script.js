@@ -1,6 +1,6 @@
-// Configuración de la API
-const API_KEY = '0635d0df2e862bb56ac1729e7d0b583b'; // API Key de GNews
-const API_BASE_URL = 'https://gnews.io/api/v4';
+// Configuración de la API - The Guardian (funciona con HTTPS y sin CORS)
+const API_KEY = 'test'; // The Guardian permite 'test' para desarrollo
+const API_BASE_URL = 'https://content.guardianapis.com';
 
 // Estado de la aplicación
 const state = {
@@ -77,24 +77,54 @@ function handleSearch() {
     }
 }
 
+// Mapeo de categorías a secciones de The Guardian
+const categoryMap = {
+    'general': 'world',
+    'technology': 'technology',
+    'business': 'business',
+    'sports': 'sport',
+    'entertainment': 'culture'
+};
+
 // Cargar noticias por categoría
 async function loadNews(category) {
     showLoading();
     
     try {
-        const url = `${API_BASE_URL}/top-headlines?category=${category}&lang=es&max=12&apikey=${API_KEY}`;
-        const response = await fetch(url);
-        const data = await response.json();
+        const section = categoryMap[category] || 'world';
+        const url = `${API_BASE_URL}/search?section=${section}&show-fields=thumbnail,trailText&page-size=12&api-key=${API_KEY}`;
         
-        if (data.articles && data.articles.length > 0) {
-            state.currentNews = data.articles;
-            displayNews(data.articles);
+        console.log('Cargando noticias desde:', url);
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Datos recibidos:', data);
+        
+        if (data.response && data.response.results && data.response.results.length > 0) {
+            // Adaptar formato de The Guardian a nuestro formato
+            const articles = data.response.results.map(item => ({
+                title: item.webTitle,
+                description: item.fields?.trailText || 'Lee la noticia completa para más detalles',
+                url: item.webUrl,
+                image: item.fields?.thumbnail || 'https://via.placeholder.com/400x200?text=Sin+Imagen',
+                source: { name: 'The Guardian' },
+                publishedAt: item.webPublicationDate
+            }));
+            
+            state.currentNews = articles;
+            displayNews(articles);
         } else {
             showEmptyState();
         }
     } catch (error) {
         console.error('Error al cargar noticias:', error);
         showEmptyState();
+        showNotification('Error al cargar noticias. Intenta de nuevo.');
     }
 }
 
@@ -103,19 +133,39 @@ async function searchNews(query) {
     showLoading();
     
     try {
-        const url = `${API_BASE_URL}/search?q=${encodeURIComponent(query)}&lang=es&max=12&apikey=${API_KEY}`;
-        const response = await fetch(url);
-        const data = await response.json();
+        const url = `${API_BASE_URL}/search?q=${encodeURIComponent(query)}&show-fields=thumbnail,trailText&page-size=12&api-key=${API_KEY}`;
         
-        if (data.articles && data.articles.length > 0) {
-            state.currentNews = data.articles;
-            displayNews(data.articles);
+        console.log('Buscando noticias:', url);
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Resultados de búsqueda:', data);
+        
+        if (data.response && data.response.results && data.response.results.length > 0) {
+            // Adaptar formato
+            const articles = data.response.results.map(item => ({
+                title: item.webTitle,
+                description: item.fields?.trailText || 'Lee la noticia completa para más detalles',
+                url: item.webUrl,
+                image: item.fields?.thumbnail || 'https://via.placeholder.com/400x200?text=Sin+Imagen',
+                source: { name: 'The Guardian' },
+                publishedAt: item.webPublicationDate
+            }));
+            
+            state.currentNews = articles;
+            displayNews(articles);
         } else {
             showEmptyState();
         }
     } catch (error) {
         console.error('Error al buscar noticias:', error);
         showEmptyState();
+        showNotification('Error en la búsqueda. Intenta de nuevo.');
     }
 }
 
