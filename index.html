@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsHub - Tu Portal de Noticias</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">📰</span>
+                    <h1>NewsHub</h1>
+                </div>
+                <nav class="nav">
+                    <button class="nav-btn active" data-category="general">General</button>
+                    <button class="nav-btn" data-category="technology">Tecnología</button>
+                    <button class="nav-btn" data-category="business">Negocios</button>
+                    <button class="nav-btn" data-category="sports">Deportes</button>
+                    <button class="nav-btn" data-category="entertainment">Entretenimiento</button>
+                    <button class="nav-btn favorites-btn" data-category="favorites">
+                        <span class="fav-icon">❤️</span>
+                        Favoritos
+                        <span class="fav-count">0</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search Bar -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-wrapper">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Buscar noticias..."
+                >
+                <button id="searchBtn" class="search-btn">
+                    <span class="search-icon">🔍</span>
+                    Buscar
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Loading State -->
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Cargando noticias...</p>
+            </div>
+
+            <!-- News Grid -->
+            <div id="newsGrid" class="news-grid"></div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state hidden">
+                <div class="empty-icon">📭</div>
+                <h2>No hay noticias disponibles</h2>
+                <p>Intenta con otra búsqueda o categoría</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>NewsHub &copy; 2024 - Proyecto de Portafolio</p>
+            <p class="footer-note">Noticias obtenidas de NewsAPI</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
